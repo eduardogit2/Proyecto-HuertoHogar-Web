@@ -1,12 +1,13 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
 import { api } from '../services/mockApi';
 import { formatearPrecio } from '../utils/format';
-import type { Pedido } from '../types';
+import type { Pedido, Direccion } from '../types'; 
 import ModalBoleta from '../components/ModalBoleta';
+import { Form, Row, Col } from 'react-bootstrap';
 
 const sucursales = [
   'Santiago Centro', 'Santiago Oriente', 'Santiago Poniente',
@@ -22,13 +23,32 @@ export default function Compra() {
 
   const [metodoEntrega, setMetodoEntrega] = useState<'sucursal' | 'domicilio' | ''>('');
   const [sucursalSeleccionada, setSucursalSeleccionada] = useState('');
+
   const [opcionDireccion, setOpcionDireccion] = useState('nueva');
   const [calle, setCalle] = useState('');
-  const [ciudad, setCiudad] = useState('');
-  const [region, setRegion] = useState('');
   const [guardarDireccion, setGuardarDireccion] = useState(true);
+
   const [usarPuntos, setUsarPuntos] = useState(false);
   const [boleta, setBoleta] = useState<Pedido | null>(null);
+
+  const [regiones, setRegiones] = useState<Record<string, string[]>>({});
+  const [comunas, setComunas] = useState<string[]>([]);
+  const [regionSeleccionada, setRegionSeleccionada] = useState('');
+  const [comunaSeleccionada, setComunaSeleccionada] = useState('');
+
+  useEffect(() => {
+    api.getRegionesYComunas().then(setRegiones);
+  }, []);
+
+  useEffect(() => {
+    if (regionSeleccionada && regiones[regionSeleccionada]) {
+      setComunas(regiones[regionSeleccionada]);
+      setComunaSeleccionada('');
+    } else {
+      setComunas([]);
+    }
+  }, [regionSeleccionada, regiones]);
+
 
   const puntosUsuario = usuarioActual?.puntos || 0;
 
@@ -66,19 +86,22 @@ export default function Compra() {
     } else if (metodoEntrega === 'domicilio') {
       let direccionSeleccionada = '';
       if (opcionDireccion === 'nueva') {
-        if (!calle || !ciudad || !region) {
-          showNotification('Por favor, completa todos los campos de la nueva dirección.', 'error');
+        if (!calle || !comunaSeleccionada || !regionSeleccionada) {
+          showNotification('Por favor, completa calle, región y comuna.', 'error');
           return;
         }
-        direccionSeleccionada = `${calle}, ${ciudad}, ${region}`;
+        direccionSeleccionada = `${calle}, ${comunaSeleccionada}, ${regionSeleccionada}`;
         if (guardarDireccion) {
-          nuevaDireccionAGuardar = { calle, ciudad, region };
+          nuevaDireccionAGuardar = { calle, ciudad: comunaSeleccionada, region: regionSeleccionada };
         }
       } else {
         const indice = parseInt(opcionDireccion.replace('guardada-', ''));
         const dir = usuarioActual.direcciones?.[indice];
         if (dir) {
           direccionSeleccionada = `${dir.calle}, ${dir.ciudad}, ${dir.region}`;
+        } else {
+          showNotification('La dirección guardada no es válida. Por favor, selecciona "nueva dirección".', 'error');
+          return;
         }
       }
       detallesEntrega = { tipoEntrega: 'domicilio', direccion: direccionSeleccionada };
@@ -111,6 +134,7 @@ export default function Compra() {
       limpiarCarrito();
       showNotification('¡Compra realizada con éxito!', 'success');
       setBoleta(nuevoPedido);
+
     } catch (error) {
       console.error(error);
       showNotification('Error al procesar el pedido.', 'error');
@@ -123,7 +147,7 @@ export default function Compra() {
       <main className="container my-5">
         <div className="row justify-content-center">
           <div className="col-md-8">
-            <form onSubmit={handleFinalizarCompra}>
+            <Form onSubmit={handleFinalizarCompra}>
               <div className="card shadow-lg p-4">
                 <h2 className="card-title text-center mb-4" style={{ color: 'var(--color-primario)' }}>Finalizar Compra</h2>
 
@@ -148,27 +172,21 @@ export default function Compra() {
                 {puntosUsuario > 0 && (
                   <div id="seccionPuntos" className="mt-4 card p-3">
                     <h5>Puntos de Fidelización</h5>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="usarPuntosCheckbox"
-                        checked={usarPuntos}
-                        onChange={(e) => setUsarPuntos(e.target.checked)}
-                      />
-                      <label className="form-check-label" htmlFor="usarPuntosCheckbox">
-                        Usar mis {puntosUsuario} puntos (equivalen a {formatearPrecio(puntosUsuario)})
-                      </label>
-                    </div>
+                    <Form.Check
+                      type="checkbox"
+                      id="usarPuntosCheckbox"
+                      label={`Usar mis ${puntosUsuario} puntos (equivalen a ${formatearPrecio(puntosUsuario)})`}
+                      checked={usarPuntos}
+                      onChange={(e) => setUsarPuntos(e.target.checked)}
+                    />
                   </div>
                 )}
 
                 <hr className="my-4" />
 
-                <div className="mb-4">
-                  <label htmlFor="metodoEntrega" className="form-label fw-bold">Elige cómo recibir tu pedido:</label>
-                  <select
-                    className="form-select"
+                <Form.Group className="mb-4">
+                  <Form.Label htmlFor="metodoEntrega" className="fw-bold">Elige cómo recibir tu pedido:</Form.Label>
+                  <Form.Select
                     id="metodoEntrega"
                     value={metodoEntrega}
                     onChange={(e) => setMetodoEntrega(e.target.value as 'sucursal' | 'domicilio' | '')}
@@ -176,72 +194,89 @@ export default function Compra() {
                     <option value="" disabled>Selecciona una opción</option>
                     <option value="sucursal">Retiro en sucursal</option>
                     <option value="domicilio">Envío a domicilio</option>
-                  </select>
-                </div>
+                  </Form.Select>
+                </Form.Group>
 
                 {metodoEntrega === 'sucursal' && (
-                  <div id="seccionSucursal">
-                    <label htmlFor="selectorSucursal" className="form-label fw-bold">Elige tu sucursal:</label>
-                    <select
-                      className="form-select form-select-sm"
+                  <Form.Group id="seccionSucursal">
+                    <Form.Label htmlFor="selectorSucursal" className="fw-bold">Elige tu sucursal:</Form.Label>
+                    <Form.Select
                       id="selectorSucursal"
                       value={sucursalSeleccionada}
                       onChange={(e) => setSucursalSeleccionada(e.target.value)}
                     >
                       <option value="" disabled>Selecciona una sucursal</option>
                       {sucursales.map(suc => <option key={suc} value={suc}>{suc}</option>)}
-                    </select>
-                  </div>
+                    </Form.Select>
+                  </Form.Group>
                 )}
 
                 {metodoEntrega === 'domicilio' && (
                   <div id="seccionDireccion">
                     <h5 className="fw-bold">Dirección de Envío</h5>
-                    <div className="mb-3">
-                      <label htmlFor="selectorDireccion" className="form-label">Direcciones guardadas</label>
-                      <select
-                        className="form-select"
+                    <Form.Group className="mb-3">
+                      <Form.Label htmlFor="selectorDireccion">Direcciones guardadas</Form.Label>
+                      <Form.Select
                         id="selectorDireccion"
                         value={opcionDireccion}
                         onChange={(e) => setOpcionDireccion(e.target.value)}
                       >
                         <option value="nueva">Usar una nueva dirección</option>
-                        {usuarioActual?.direcciones?.map((dir, indice) => (
+                        {usuarioActual?.direcciones?.map((dir: Direccion, indice: number) => ( 
                           <option key={indice} value={`guardada-${indice}`}>
                             {dir.calle}, {dir.ciudad}, {dir.region}
                           </option>
                         ))}
-                      </select>
-                    </div>
+                      </Form.Select>
+                    </Form.Group>
 
                     {opcionDireccion === 'nueva' && (
                       <div id="camposNuevaDireccion">
-                        <div className="mb-3">
-                          <label htmlFor="calleDireccion" className="form-label">Calle</label>
-                          <input type="text" className="form-control" id="calleDireccion" placeholder="Ej: Av. Principal 123" value={calle} onChange={(e) => setCalle(e.target.value)} />
-                        </div>
-                        <div className="row">
-                          <div className="col-md-6 mb-3">
-                            <label htmlFor="ciudadDireccion" className="form-label">Ciudad</label>
-                            <input type="text" className="form-control" id="ciudadDireccion" placeholder="Ej: Santiago" value={ciudad} onChange={(e) => setCiudad(e.target.value)} />
-                          </div>
-                          <div className="col-md-6 mb-3">
-                            <label htmlFor="regionDireccion" className="form-label">Región</label>
-                            <input type="text" className="form-control" id="regionDireccion" placeholder="Ej: Metropolitana" value={region} onChange={(e) => setRegion(e.target.value)} />
-                          </div>
-                        </div>
-                        <div className="form-check mb-3">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="checkboxGuardarDireccion"
-                            checked={guardarDireccion}
-                            onChange={(e) => setGuardarDireccion(e.target.checked)}
-                          />
-                          <label className="form-check-label" htmlFor="checkboxGuardarDireccion">
-                            Guardar esta dirección para futuras compras
-                          </label>
-                        </div>
+                        <Form.Group className="mb-3">
+                          <Form.Label htmlFor="calleDireccion">Calle y Número</Form.Label>
+                          <Form.Control type="text" id="calleDireccion" placeholder="Ej: Av. Principal 123" value={calle} onChange={(e) => setCalle(e.target.value)} />
+                        </Form.Group>
+
+                        <Row>
+                          <Col md={6}>
+                            <Form.Group className="mb-3">
+                              <Form.Label htmlFor="region">Región</Form.Label>
+                              <Form.Select
+                                id="region"
+                                value={regionSeleccionada}
+                                onChange={(e) => setRegionSeleccionada(e.target.value)}
+                                required
+                              >
+                                <option value="" disabled>Selecciona una región</option>
+                                {Object.keys(regiones).map(r => <option key={r} value={r}>{r}</option>)}
+                              </Form.Select>
+                            </Form.Group>
+                          </Col>
+                          <Col md={6}>
+                            <Form.Group className="mb-3">
+                              <Form.Label htmlFor="comuna">Comuna</Form.Label>
+                              <Form.Select
+                                id="comuna"
+                                value={comunaSeleccionada}
+                                onChange={(e) => setComunaSeleccionada(e.target.value)}
+                                disabled={comunas.length === 0}
+                                required
+                              >
+                                <option value="" disabled>Selecciona una comuna</option>
+                                {comunas.map(c => <option key={c} value={c}>{c}</option>)}
+                              </Form.Select>
+                            </Form.Group>
+                          </Col>
+                        </Row>
+
+                        <Form.Check
+                          type="checkbox"
+                          id="checkboxGuardarDireccion"
+                          label="Guardar esta dirección para futuras compras"
+                          checked={guardarDireccion}
+                          onChange={(e) => setGuardarDireccion(e.target.checked)}
+                          className="mb-3"
+                        />
                       </div>
                     )}
                   </div>
@@ -264,8 +299,9 @@ export default function Compra() {
                   <Link to="/productos" className="btn btn-link text-muted">Volver a la tienda</Link>
                 </div>
               </div>
-            </form>
+            </Form>
           </div>
+
         </div>
       </main>
 
