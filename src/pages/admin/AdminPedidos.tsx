@@ -116,6 +116,7 @@ export default function AdminPedidos() {
           </div>
         </div>
       </div>
+
       <ModalBoleta
         pedido={pedidoSeleccionado}
         onClose={() => setPedidoSeleccionado(null)}

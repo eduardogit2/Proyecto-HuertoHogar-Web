@@ -1,44 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../services/mockApi';
 import type { Producto } from '../types';
 import TarjetaProducto from '../components/TarjetaProducto';
 import ModalDetalleProducto from '../components/ModalDetalleProducto';
+import { useProductContext } from '../context/ProductContext';
 
 export default function Inicio() {
-  const [productosDestacados, setProductosDestacados] = useState<Producto[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { productos, cargando, actualizarProductoCompleto } = useProductContext();
+  
   const [productoSeleccionado, setProductoSeleccionado] = useState<Producto | null>(null);
 
-  useEffect(() => {
-    setCargando(true);
-    api.getProductos()
-      .then(todosLosProductos => {
-        const destacados = todosLosProductos
-          .filter(p => p.etiqueta === 'Oferta')
-          .slice(0, 3);
-        setProductosDestacados(destacados);
-      })
-      .catch(err => console.error("Error al cargar productos destacados:", err))
-      .finally(() => setCargando(false));
-  }, []);
-
-  const handleAbrirModal = (producto: Producto) => {
-    setProductoSeleccionado(producto);
-  };
-
-  const handleCerrarModal = () => {
-    setProductoSeleccionado(null);
-  };
-
   const handleResenaAgregada = (productoActualizado: Producto) => {
-    setProductosDestacados(prevDestacados =>
-      prevDestacados.map(p =>
-        p.id === productoActualizado.id ? productoActualizado : p
-      )
-    );
+    actualizarProductoCompleto(productoActualizado);
     setProductoSeleccionado(productoActualizado);
   };
+
+  const productosDestacados = useMemo(() => {
+    return productos
+      .filter(p => p.etiqueta === 'Oferta')
+      .slice(0, 3);
+  }, [productos]);
 
   return (
     <>
@@ -51,9 +32,8 @@ export default function Inicio() {
           </div>
         </div>
       </header>
-
+      
       <main className="container my-5">
-
         <section className="text-center mb-5">
           <h2 className="fw-bold mb-3">Nuestra Esencia</h2>
           <p className="text-muted mx-auto" style={{ maxWidth: '700px' }}>
@@ -63,7 +43,7 @@ export default function Inicio() {
           </p>
           <Link to="/nosotros" className="btn btn-outline-primario mt-3">Conoce Nuestra Historia</Link>
         </section>
-
+        
         <section className="seccion-alternativa py-5 mb-5">
           <div className="container">
             <h2 className="text-center fw-bold mb-4">Productos Destacados</h2>
@@ -72,11 +52,11 @@ export default function Inicio() {
               {!cargando && productosDestacados.length === 0 && (
                 <p className="text-center text-muted">No hay ofertas destacadas por el momento.</p>
               )}
-              {!cargando && productosDestacados.map(producto => (
-                <TarjetaProducto
-                  key={producto.id}
-                  producto={producto}
-                  onProductoClick={handleAbrirModal}
+              {!cargando && productosDestacados.map(p => (
+                <TarjetaProducto 
+                  key={p.id} 
+                  producto={p} 
+                  onProductoClick={setProductoSeleccionado}
                 />
               ))}
             </div>
@@ -85,7 +65,7 @@ export default function Inicio() {
             </div>
           </div>
         </section>
-
+        
         <section className="text-center">
           <h2 className="fw-bold mb-3">Últimas Novedades del Blog</h2>
           <p className="text-muted mx-auto" style={{ maxWidth: '700px' }}>
@@ -96,9 +76,9 @@ export default function Inicio() {
         </section>
       </main>
 
-      <ModalDetalleProducto
+      <ModalDetalleProducto 
         producto={productoSeleccionado}
-        onClose={handleCerrarModal}
+        onClose={() => setProductoSeleccionado(null)}
         onResenaAgregada={handleResenaAgregada}
       />
     </>

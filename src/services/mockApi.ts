@@ -18,10 +18,10 @@ const productosIniciales: Producto[] = [
   { id: 900, nombre: "Leche Entera", precio: 1400, precioConDescuento: 1250, categoria: "Lácteos", imagen: "img/prod9.jpg", etiqueta: "Oferta", descripcion: "Leche entera fresca y cremosa, producida en la Región de Los Lagos, Chile. Con un sabor auténtico y completa en nutrientes esenciales como calcio y proteínas, es ideal para el desayuno o para preparar tus recetas favoritas.", stock: 90, origen: "Los Lagos, Chile", unidad: "litro", stockCritico: null, resenas: [{ usuario: "Pablo Q.", calificacion: 5, texto: "Muy buena y fresca." }] }
 ];
 function inicializarProductos() {
-  const productosGuardados = localStorage.getItem(PRODUCTOS_KEY);
-  if (!productosGuardados || JSON.parse(productosGuardados).length === 0) {
-    localStorage.setItem(PRODUCTOS_KEY, JSON.stringify(productosIniciales));
-  }
+    const productosGuardados = localStorage.getItem(PRODUCTOS_KEY);
+    if (!productosGuardados || JSON.parse(productosGuardados).length === 0) {
+        localStorage.setItem(PRODUCTOS_KEY, JSON.stringify(productosIniciales));
+    }
 }
 const publicacionesIniciales: PublicacionBlog[] = [
   { id: 1, titulo: "5 Prácticas Sostenibles para tu Huerto", imagen: "img/blog-sostenibilidad.jpg", fecha: "2025-06-20", categoria: "Sostenibilidad", contenido: `<p>Crear un huerto es un acto de conexión con la naturaleza...</p><h4>1. Haz tu propio compost</h4><p>El compostaje es una forma fantástica...</p><h4>2. Recoge agua de lluvia</h4><p>Instalar un sistema sencillo...</p><h4>3. Cultiva especies nativas</h4><p>Las plantas nativas...</p><h4>4. Controla las plagas de forma natural</h4><p>Olvídate de los pesticidas agresivos...</p><h4>5. Rota tus cultivos</h4><p>No plantes la misma especie...</p><p>¡Un huerto sostenible es un huerto feliz y productivo!</p>` },
@@ -37,64 +37,64 @@ const comentariosIniciales: Record<string, ComentarioBlog[]> = {
   '5': [{ usuario: "Javier", texto: "Excelente guía, justo lo que necesitaba para mi balcón." }]
 };
 function inicializarBlog() {
-  const postsGuardados = localStorage.getItem(BLOG_KEY);
-  if (!postsGuardados || JSON.parse(postsGuardados).length === 0) {
-    localStorage.setItem(BLOG_KEY, JSON.stringify(publicacionesIniciales));
-  }
+    const postsGuardados = localStorage.getItem(BLOG_KEY);
+    if (!postsGuardados || JSON.parse(postsGuardados).length === 0) {
+        localStorage.setItem(BLOG_KEY, JSON.stringify(publicacionesIniciales));
+    }
 }
 function inicializarBlogComentarios() {
-  const comentariosGuardados = localStorage.getItem(BLOG_COMMENTS_KEY);
-  if (!comentariosGuardados) {
-    localStorage.setItem(BLOG_COMMENTS_KEY, JSON.stringify(comentariosIniciales));
-  }
+    const comentariosGuardados = localStorage.getItem(BLOG_COMMENTS_KEY);
+    if (!comentariosGuardados) {
+        localStorage.setItem(BLOG_COMMENTS_KEY, JSON.stringify(comentariosIniciales));
+    }
 }
 function inicializarAdmin() {
-  const usuariosGuardados = localStorage.getItem(USUARIOS_KEY);
-  let usuarios: Usuario[] = usuariosGuardados ? JSON.parse(usuariosGuardados) : [];
-  if (!usuariosGuardados || usuarios.length === 0) {
-    const nuevoAdmin: Usuario = {
-      id: 1,
-      nombre: 'Admin',
-      rut: '1-9',
-      correo: 'admin@huertohogar.cl',
-      contrasena: 'admin',
-      esAdmin: true
-    };
-    usuarios = [nuevoAdmin];
-    localStorage.setItem(USUARIOS_KEY, JSON.stringify(usuarios));
-  } else {
-    const usuarioAdmin = usuarios.find(u => u.esAdmin);
-    if (!usuarioAdmin) {
-      const nuevoAdmin: Usuario = {
-        id: 1,
-        nombre: 'Admin',
-        rut: '1-9',
-        correo: 'admin@huertohogar.cl',
-        contrasena: 'admin',
-        esAdmin: true
-      };
-      usuarios.push(nuevoAdmin);
-      localStorage.setItem(USUARIOS_KEY, JSON.stringify(usuarios));
+    const usuariosGuardados = localStorage.getItem(USUARIOS_KEY);
+    let usuarios: Usuario[] = usuariosGuardados ? JSON.parse(usuariosGuardados) : [];
+    if (!usuariosGuardados || usuarios.length === 0) {
+        const nuevoAdmin: Usuario = {
+            id: 1,
+            nombre: 'Admin',
+            rut: '1-9',
+            correo: 'admin@huertohogar.cl',
+            contrasena: 'admin',
+            esAdmin: true
+        };
+        usuarios = [nuevoAdmin];
+        localStorage.setItem(USUARIOS_KEY, JSON.stringify(usuarios));
+    } else {
+        const usuarioAdmin = usuarios.find(u => u.esAdmin);
+        if (!usuarioAdmin) {
+            const nuevoAdmin: Usuario = {
+                id: 1,
+                nombre: 'Admin',
+                rut: '1-9',
+                correo: 'admin@huertohogar.cl',
+                contrasena: 'admin',
+                esAdmin: true
+            };
+            usuarios.push(nuevoAdmin);
+            localStorage.setItem(USUARIOS_KEY, JSON.stringify(usuarios));
+        }
     }
-  }
 }
 const regionesYComunas = {
-  "Región de Arica y Parinacota": ["Arica", "Camarones", "Putre", "General Lagos"],
-  "Región de Tarapacá": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"],
-  "Región de Antofagasta": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"],
-  "Región de Atacama": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"],
-  "Región de Coquimbo": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"],
-  "Región de Valparaíso": ["Valparaíso", "Casablanca", "Concón", "Juan Fernández", "Quintero", "Viña del Mar", "Isla de Pascua", "Los Andes", "Calle Larga", "Catemu", "Llay-Llay", "San Esteban", "La Ligua", "Cabildo", "Papudo", "Petorca", "Zapallar", "Quillota", "Calera", "Hijuelas", "La Cruz", "Nogales", "San Antonio", "Algarrobo", "Cartagena", "El Quisco", "El Tabo", "Santo Domingo", "San Felipe", "Catemu", "Llaillay", "Putaendo", "Santa María", "Panquehue", "Quilpué", "Limache", "Olmué", "Villa Alemana"],
-  "Región Metropolitana de Santiago": ["Santiago", "Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "Tiltil", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"],
-  "Región del Libertador General Bernardo O'Higgins": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "La Estrella", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Paredones", "Peralillo", "Peumo", "Pichilemu", "Pichidegua", "Placilla", "Requínoa", "Rengo", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Pumanque", "San Vicente", "Santa Cruz", "Litueche"],
-  "Región del Maule": ["Talca", "Constitución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "Retiro", "San Javier de Loncomilla", "Villa Alegre", "Yerbas Buenas"],
-  "Región de Ñuble": ["Cobquecura", "Coelemu", "Ninhue", "Portezuelo", "Quirihue", "Ránquil", "Treguaco", "Bulnes", "Chillán Viejo", "Chillán", "El Carmen", "Pemuco", "Pinto", "Quillón", "San Ignacio", "Yungay", "San Carlos", "Coihueco", "Ñiquén", "San Fabián", "San Nicolás"],
-  "Región del Biobío": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío"],
-  "Región de la Araucanía": ["Temuco", "Carahue", "Cholchol", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre Las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria"],
-  "Región de los Ríos": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"],
-  "Región de los Lagos": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao"],
-  "Región de Aysén del General Carlos Ibáñez del Campo": ["Coyhaique", "Lago Verde", "Aysén", "Cisnes", "Guaitecas", "Cochrane", "O'Higgins", "Tortel", "Chile Chico", "Río Ibáñez"],
-  "Región de Magallanes y de la Antártica Chilena": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos (Ex Navarino)", "Antártica", "Porvenir", "Primavera", "Timaukel", "Torres del Paine"],
+    "Región de Arica y Parinacota": ["Arica", "Camarones", "Putre", "General Lagos"],
+    "Región de Tarapacá": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"],
+    "Región de Antofagasta": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"],
+    "Región de Atacama": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"],
+    "Región de Coquimbo": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"],
+    "Región de Valparaíso": ["Valparaíso", "Casablanca", "Concón", "Juan Fernández", "Quintero", "Viña del Mar", "Isla de Pascua", "Los Andes", "Calle Larga", "Catemu", "Llay-Llay", "San Esteban", "La Ligua", "Cabildo", "Papudo", "Petorca", "Zapallar", "Quillota", "Calera", "Hijuelas", "La Cruz", "Nogales", "San Antonio", "Algarrobo", "Cartagena", "El Quisco", "El Tabo", "Santo Domingo", "San Felipe", "Catemu", "Llaillay", "Putaendo", "Santa María", "Panquehue", "Quilpué", "Limache", "Olmué", "Villa Alemana"],
+    "Región Metropolitana de Santiago": ["Santiago", "Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "Tiltil", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"],
+    "Región del Libertador General Bernardo O'Higgins": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "La Estrella", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Paredones", "Peralillo", "Peumo", "Pichilemu", "Pichidegua", "Placilla", "Requínoa", "Rengo", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Pumanque", "San Vicente", "Santa Cruz", "Litueche"],
+    "Región del Maule": ["Talca", "Constitución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "Retiro", "San Javier de Loncomilla", "Villa Alegre", "Yerbas Buenas"],
+    "Región de Ñuble": ["Cobquecura", "Coelemu", "Ninhue", "Portezuelo", "Quirihue", "Ránquil", "Treguaco", "Bulnes", "Chillán Viejo", "Chillán", "El Carmen", "Pemuco", "Pinto", "Quillón", "San Ignacio", "Yungay", "San Carlos", "Coihueco", "Ñiquén", "San Fabián", "San Nicolás"],
+    "Región del Biobío": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío"],
+    "Región de la Araucanía": ["Temuco", "Carahue", "Cholchol", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre Las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria"],
+    "Región de los Ríos": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"],
+    "Región de los Lagos": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao"],
+    "Región de Aysén del General Carlos Ibáñez del Campo": ["Coyhaique", "Lago Verde", "Aysén", "Cisnes", "Guaitecas", "Cochrane", "O'Higgins", "Tortel", "Chile Chico", "Río Ibáñez"],
+    "Región de Magallanes y de la Antártica Chilena": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos (Ex Navarino)", "Antártica", "Porvenir", "Primavera", "Timaukel", "Torres del Paine"],
 };
 inicializarProductos();
 inicializarAdmin();
@@ -113,10 +113,13 @@ const getComentariosDB = (): Record<string, ComentarioBlog[]> => JSON.parse(loca
 const saveComentariosDB = (comentarios: Record<string, ComentarioBlog[]>) => localStorage.setItem(BLOG_COMMENTS_KEY, JSON.stringify(comentarios));
 
 export const api = {
-
+  
   getProductos: async (): Promise<Producto[]> => getProductosDB(),
   getProductoById: async (id: number): Promise<Producto | undefined> => getProductosDB().find(p => p.id === id),
   getCategoriasUnicas: async (): Promise<string[]> => Array.from(new Set(getProductosDB().map(p => p.categoria))).filter(Boolean),
+  saveProductos: async (productos: Producto[]): Promise<void> => {
+    saveProductosDB(productos);
+  },
   createProducto: async (nuevoProducto: Producto): Promise<Producto> => {
     const productos = getProductosDB();
     productos.push(nuevoProducto);
@@ -140,7 +143,7 @@ export const api = {
     const productos = getProductosDB();
     const indice = productos.findIndex(p => p.id === productoId);
     if (indice === -1) throw new Error("Producto no encontrado");
-
+    
     productos[indice].resenas.push(resena);
     saveProductosDB(productos);
     return productos[indice];
@@ -191,7 +194,7 @@ export const api = {
     saveComentariosDB(comentarios);
     return comentario;
   },
-
+  
   login: async (correo: string, contrasena: string): Promise<Usuario> => {
     const usuarios = getUsuariosDB();
     const usuario = usuarios.find(u => u.correo === correo && u.contrasena === contrasena);
@@ -235,12 +238,12 @@ export const api = {
     const usuarios = getUsuariosDB();
     const indice = usuarios.findIndex(u => u.correo === correoOriginal);
     if (indice === -1) throw new Error("Usuario no encontrado");
-
+    
     if (!usuarioActualizado.contrasena) {
       usuarioActualizado.contrasena = usuarios[indice].contrasena;
     }
-
-    usuarioActualizado.correo = correoOriginal;
+    
+    usuarioActualizado.correo = correoOriginal; 
     usuarios[indice] = usuarioActualizado;
     saveUsuariosDB(usuarios);
     return usuarioActualizado;
@@ -268,7 +271,7 @@ export const api = {
         if (!usuarioActual.direcciones) {
           usuarioActual.direcciones = [];
         }
-        const dirExiste = usuarioActual.direcciones.some(d =>
+        const dirExiste = usuarioActual.direcciones.some(d => 
           d.calle === nuevaDireccion.calle && d.ciudad === nuevaDireccion.ciudad
         );
         if (!dirExiste) {
@@ -279,6 +282,7 @@ export const api = {
       saveUsuariosDB(usuarios);
       localStorage.setItem('usuarioActual', JSON.stringify(usuarioActual));
     }
+    
     localStorage.removeItem('carrito');
     return pedido;
   },

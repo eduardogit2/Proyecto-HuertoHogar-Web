@@ -1,7 +1,5 @@
-// src/context/AuthContext.tsx
-
 import { createContext, useContext, useState, useEffect } from 'react';
-import type { ReactNode } from 'react'; // <-- ¡CORRECCIÓN!
+import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Usuario } from '../types';
 import { api } from '../services/mockApi';
@@ -16,6 +14,15 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth debe ser usado dentro de un AuthProvider');
+  }
+  return context;
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuarioActual, setUsuarioActual] = useState<Usuario | null>(null);
@@ -47,18 +54,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (nuevoUsuario: Omit<Usuario, 'id' | 'esAdmin'>) => {
-    try {
-      if (nuevoUsuario.contrasena.length < 4 || nuevoUsuario.contrasena.length > 10) {
-        showNotification('La contraseña debe tener entre 4 y 10 caracteres.', 'error');
-        return;
-      }
-      await api.register(nuevoUsuario);
-      showNotification('¡Registro exitoso! Ahora puedes iniciar sesión.', 'success');
-      navigate('/ingreso');
-    } catch (error) {
-      console.error(error);
-      showNotification((error as Error).message, 'error');
-    }
+    await api.register(nuevoUsuario);
+    showNotification('¡Registro exitoso! Ahora puedes iniciar sesión.', 'success');
+    navigate('/ingreso');
   };
 
   const logout = () => {
@@ -90,13 +88,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-// eslint-disable-next-line react-refresh/only-export-components
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth debe ser usado dentro de un AuthProvider');
-  }
-  return context;
 }
