@@ -1,0 +1,250 @@
+:root {
+  --color-primario: #2E8B57;
+  --color-secundario: #ff700a;
+  --color-acento: #2E8B57;
+  --color-texto-principal: #333333;
+  --color-texto-secundario: #666666;
+  --color-fondo-principal: #F7F7F7;
+  --color-verde-fresco: #6FBF73;
+  --color-beige-suave: #FAF3E0;
+  --sombra-tarjeta: rgba(46, 139, 87, 0.12);
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: var(--color-fondo-principal);
+  background-image: url("/img/fondo3.jpg");
+  background-repeat: repeat;
+  background-size: auto;
+  background-attachment: fixed;
+  color: var(--color-texto-principal);
+}
+
+h1,
+h2 {
+  font-family: "Playfair Display", serif;
+  color: var(--color-secundario);
+}
+
+h3,
+h4,
+h5,
+h6,
+p {
+  font-family: "Montserrat", sans-serif;
+  color: var(--color-texto-secundario);
+}
+
+.imagen-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.barra-navegacion {
+  background: var(--color-fondo-principal);
+}
+
+.portada {
+  background-image: url('/img/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+}
+
+.superposicion-portada {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 40px 0;
+}
+
+.contenido-portada {
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.barra-lateral-fija {
+  position: sticky;
+  top: 20px;
+}
+
+.list-group-item.active {
+  background-color: var(--color-primario);
+  border-color: var(--color-primario);
+}
+
+.tarjeta-producto {
+  transition: transform .12s ease, box-shadow .12s ease;
+  border: none;
+  box-shadow: 0 6px 18px var(--sombra-tarjeta);
+  border-radius: 8px;
+  background-color: #ffffff;
+  overflow: hidden;
+  height: 100%;
+}
+
+.tarjeta-producto:hover {
+  transform: translateY(-6px);
+}
+
+.imagen-producto {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.precio {
+  font-weight: 700;
+  color: var(--color-primario);
+}
+
+.btn-primario {
+  background: var(--color-primario);
+  border: none;
+  color: #fff;
+}
+
+.btn-primario:hover {
+  background: #246b4a;
+}
+
+.btn-acento {
+  background: var(--color-acento);
+  color: #fff;
+  border: none;
+}
+
+.btn-acento:hover {
+  background: #2E8B57;
+}
+
+.btn-agregar {
+  background: var(--color-verde-fresco);
+  color: #fff;
+  border: none;
+}
+
+.btn-agregar:hover {
+  background: #4e9e58;
+}
+
+.texto-secundario {
+  color: var(--color-texto-secundario) !important;
+}
+
+.seccion-alternativa {
+  background: var(--color-beige-suave);
+  padding: 40px 0;
+}
+
+footer {
+  background: var(--color-fondo-principal);
+  border-top: 1px solid #ddd;
+  color: var(--color-texto-secundario);
+  padding: 20px 0;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 767px) {
+  .portada {
+    min-height: 220px;
+  }
+
+  .imagen-producto {
+    height: 140px;
+  }
+}
+
+.descripcion-categoria {
+  font-family: "Montserrat", sans-serif;
+  color: var(--color-texto-principal);
+  background-color: var(--color-fondo-principal);
+  border-left: 5px solid var(--color-primario);
+  padding: 15px;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.menu-desplegable {
+  background-color: var(--color-fondo-principal);
+  border: 1px solid var(--color-primario);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.item-desplegable {
+  color: var(--color-texto-principal);
+}
+
+.item-desplegable:hover,
+.item-desplegable:focus {
+  background-color: var(--color-primario);
+  color: #ffffff;
+}
+
+.tarjeta-imagen-superior {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.tarjeta-cuerpo {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.contenedor-texto-tarjeta {
+  flex-grow: 1;
+}
+
+.mapa-sucursal {
+  height: 300px;
+  width: 100%;
+}
+
+.btn-secundario {
+  /* Tu código original tenía btn-secundario y btn-outline-primario
+     con el mismo color que btn-primario. 
+     Voy a mantenerlo, pero puedes cambiarlo si lo necesitas. */
+  background: var(--color-primario);
+  border: none;
+  color: #fff;
+}
+
+.btn-outline-primario {
+  background: var(--color-primario);
+  border: none;
+  color: #fff;
+}
+
+
+.bi-grid-fill {
+  font-family: "Montserrat", sans-serif;
+  color: var(--color-texto-secundario);
+}
+
+/* Corregir 'active' para NavLink de react-router-dom */
+.nav-link.active,
+.nav-link:hover {
+  color: var(--color-primario);
+}
+
+.nav-link {
+  color: var(--color-texto-principal);
+  font-weight: 500;
+}
