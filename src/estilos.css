@@ -218,9 +218,6 @@ footer {
 }
 
 .btn-secundario {
-  /* Tu código original tenía btn-secundario y btn-outline-primario
-     con el mismo color que btn-primario. 
-     Voy a mantenerlo, pero puedes cambiarlo si lo necesitas. */
   background: var(--color-primario);
   border: none;
   color: #fff;
@@ -238,7 +235,6 @@ footer {
   color: var(--color-texto-secundario);
 }
 
-/* Corregir 'active' para NavLink de react-router-dom */
 .nav-link.active,
 .nav-link:hover {
   color: var(--color-primario);
